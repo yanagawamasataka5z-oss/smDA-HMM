@@ -1,0 +1,34 @@
+[project]
+name = "smda-hmm"
+version = "0.1.0"
+description = "VB-HMM diffusion-state analysis of single-molecule trajectory tables"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "GPL-3.0-or-later"
+authors = [{ name = "Masataka Yanagawa" }]
+
+# GPL-3.0-or-later rather than the GPL-2.0 of smDA-Igor: Streamlit and its
+# dependency pyarrow are Apache-2.0, which the FSF holds incompatible with
+# GPL-2.0-only because of the patent-termination clause.  Distributing a build
+# that bundles Streamlit therefore needs v3.
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.12",
+    "pandas>=2.2",
+    "streamlit>=1.40",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8.0"]
+
+[project.urls]
+Homepage = "https://github.com/yanagawamasataka5z-oss/smDA-HMM"
+
+[tool.setuptools]
+packages = ["smda_hmm", "smda_hmm.vbhmm", "smda_hmm.io", "smda_hmm.app"]
+
+# The Rust extension is not built by pip; see README, "Running from source".
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = [".", "smda_scan/python"]

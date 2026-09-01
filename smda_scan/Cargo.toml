@@ -1,0 +1,35 @@
+[package]
+name = "smda-scan"
+version = "0.1.0"
+edition = "2021"
+description = "VB-HMM diffusion-state inference for smDA-HMM"
+
+[lib]
+name = "smda_scan"
+crate-type = ["cdylib"]
+
+# The crate keeps the name it has in smDA-Python, where "scan" referred to the
+# spot-detection pipeline.  None of that is present here -- this crate exposes
+# one function, run_vbhmm_model_selection.  The name is kept so the Python
+# import path matches the upstream project it was verified against; see README.
+[dependencies]
+pyo3 = { version = "0.22", features = ["extension-module"] }
+numpy = "0.22"
+# Forward-backward is parallelised over trajectories.  rayon's
+# into_par_iter().map().collect() preserves order, so reductions stay
+# deterministic regardless of how the work is scheduled.
+rayon = "1.10"
+# digamma and ln_gamma.  Pinned exactly, and Cargo.lock is committed: the
+# reported diffusion coefficients depend on these two functions, so a patch
+# release that changed either would move published numbers silently.
+statrs = "=0.17.1"
+
+# `rand` is deliberately absent.  The K-means++ initialisation is
+# deterministic (median + farthest-point), so nothing here draws randomness.
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 16
+panic = "unwind"
+strip = "symbols"

@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+
+# Rust
+smda_scan/target/
+*.pdb
+
+# Built extension (rebuilt from source; see README)
+*.pyd
+*.so
+*.dylib
+
+# Build output
+build_output/
+dist/
+*.exe
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Scratch
+*.log
+tmp/
+scratch/
+
+# Analysis results produced by running the tool.  The bundled inputs under
+# data/ are tracked explicitly; anything a run writes is not.
+data/**/reanalysis/
+data/**/*_hmm_FAILED.csv
+smt_setting.csv

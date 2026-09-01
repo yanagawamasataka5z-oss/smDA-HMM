@@ -1,0 +1,35 @@
+Parameter name,Tracking2DSettings
+Name,Unit,Value
+Detect mode,text,GaussFit
+ROI,px,12
+Scan Length,px,3
+Analysis Start frame,frame,1
+Analysis End frame,frame,0
+Intensity Threshold,a.u.,200
+Connect mode,text,NearestNeighbor
+Connect distance,px,8
+Connect Frame,frame,2
+Minimum trajectory length,frame,15
+Save CSV,YES/NO,YES
+Save Binary,YES/NO,NO
+Save TIFF,YES/NO,YES
+Use Auto Contrast,YES/NO,YES
+Distance per pixel[um],number,0.067
+Time per frame[ms],number,40
+Save MSD,YES/NO,NO
+Save Displacement,YES/NO,NO
+Save Intensity,YES/NO,NO
+Save HMM analysis result,YES/NO,YES
+HMM Minimum Frame,number,1
+HMM analysis method,text,SimpleVbSPT
+Minimum number of states,number,1
+Maximum number of states,number,5
+n_tilde,number,1
+c_tilde,number,0.001
+w_pi_tilde,number,1
+w_b_tilde,1
+mag,number,10
+Calculate KL for each trajectory,YES/NO,YES
+Add hyper params to each trajectory,YES/NO,YES
+Estimate mode,text,MaxProb
+Use Segmentation,YES/NO,NO
