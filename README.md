@@ -94,8 +94,8 @@ filled in with the values for the bundled data. Clearing either stops the run.
 limit, and the prior hyperparameters. All are filled in with the values the
 bundled data was analysed with.
 
-**5. Check before running.** Every value the run will use, in one table, with
-what each one does if it is wrong.
+**5. Check before running.** Every value the run will use, in one table, each
+marked as a preset or as something you entered.
 
 Then **Run**. Each input produces two files in the output folder: the
 trajectory table with its state columns filled in, and the `hmm.csv`. Both are
@@ -169,11 +169,17 @@ results were verified against.
 
 ## Method
 
-The inference follows Persson et al. (2013) as implemented in AAS, applied to
-diffusion states as in Yanagawa et al., *Science Signaling* (2018).
-Hiroshima et al. (2018) use the same variational scheme with a different
-emission model, for fitting intensities rather than displacements; that
-analysis is not part of this package.
+The inference follows Persson et al., *Nature Methods* **10**, 265–269 (2013)
+as implemented in AAS, applied to diffusion states as in Yanagawa et al.,
+*Science Signaling* (2018), [doi:10.1126/scisignal.aao1917][yanagawa].
+
+Hiroshima et al., *Journal of Molecular Biology* (2018),
+[doi:10.1016/j.jmb.2018.02.018][hiroshima], use the same variational scheme
+with a different emission model, for fitting intensities rather than
+displacements. That analysis is not part of this package.
+
+[yanagawa]: https://doi.org/10.1126/scisignal.aao1917
+[hiroshima]: https://doi.org/10.1016/j.jmb.2018.02.018
 
 Trajectories are reduced to squared displacements; the model has a Dirichlet
 prior on the
@@ -200,5 +206,7 @@ incompatible with GPL-2.0-only, and the packaged build distributes them.
 
 ## Citing
 
-Please cite the accompanying manuscript, and Yanagawa et al., *Science
-Signaling* (2018) for the method.
+Please cite the accompanying manuscript, and for the method:
+
+> Yanagawa et al., *Science Signaling* (2018).
+> <https://doi.org/10.1126/scisignal.aao1917>

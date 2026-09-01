@@ -9,7 +9,13 @@ Faithful reimplementation of AAS v2.1 "SimplevbSPT" method.
 Classifies 2D diffusion trajectories into discrete diffusion states
 using variational Bayes inference on squared displacements (dx²).
 
-Reference: Persson et al., Nature Methods 10, 265–269 (2013) — vbSPT v1.0
+References:
+  Persson et al., Nature Methods 10, 265–269 (2013) — vbSPT v1.0
+  Yanagawa et al., Science Signaling (2018) — the diffusion-state
+    application implemented here. doi:10.1126/scisignal.aao1917
+  Hiroshima et al., J Mol Biol (2018) — same variational scheme, but a
+    different emission model for intensities; NOT what this module does.
+    doi:10.1016/j.jmb.2018.02.018
 AAS implementation uses direct Dirichlet parameterization (not v1.1 a/B decomposition).
 """
 
