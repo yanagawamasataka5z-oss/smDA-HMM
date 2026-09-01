@@ -168,6 +168,54 @@ def make_zip(stage: Path, dest: Path) -> Path:
     return out
 
 
+def find_iscc() -> Path | None:
+    """Inno Setup's compiler, if it is installed."""
+    candidates = [
+        Path(r"C:\Program Files (x86)\Inno Setup 6\ISCC.exe"),
+        Path(r"C:\Program Files\Inno Setup 6\ISCC.exe"),
+        Path.home() / "AppData/Local/Programs/Inno Setup 6/ISCC.exe",
+    ]
+    for c in candidates:
+        if c.exists():
+            return c
+    found = shutil.which("iscc")
+    return Path(found) if found else None
+
+
+def make_installer(stage: Path, dest: Path, ver: str) -> Path | None:
+    iscc = find_iscc()
+    if iscc is None:
+        print("\n  Inno Setup not found; skipping the installer.")
+        print("  Install it with:  winget install JRSoftware.InnoSetup")
+        return None
+    template = (ROOT / "build" / "installer.iss.in").read_text(encoding="utf-8")
+    base = f"smDA-HMM-{ver}-win64-setup"
+    parts = (ver.split("-")[0].split(".") + ["0", "0", "0"])[:4]
+    script = (template
+              .replace("@APP_NAME@", "smDA-HMM")
+              .replace("@APP_VERSION@", ver)
+              .replace("@APP_VERSION_INFO@", ".".join(parts))
+              .replace("@APP_PUBLISHER@", "Masataka Yanagawa")
+              .replace("@APP_URL@",
+                       "https://github.com/yanagawamasataka5z-oss/smDA-HMM")
+              .replace("@SOURCE_DIR@", str(stage))
+              .replace("@OUTPUT_DIR@", str(dest))
+              .replace("@OUTPUT_BASE@", base))
+    iss = OUT / "installer.iss"
+    iss.write_text(script, encoding="utf-8")
+    print(f"\n  compiling installer with {iscc.name}")
+    r = subprocess.run([str(iscc), "/Q", str(iss)], capture_output=True,
+                       text=True)
+    if r.returncode:
+        raise SystemExit(
+            f"Inno Setup failed:\n{r.stdout[-2000:]}\n{r.stderr[-2000:]}")
+    exe = dest / f"{base}.exe"
+    print(f"  installer    : {exe.stat().st_size / 1048576:.0f} MB")
+    print(f"  sha256       : {hashlib.sha256(exe.read_bytes()).hexdigest()}")
+    print(f"  path         : {exe}")
+    return exe
+
+
 def main() -> None:
     if sys.platform != "win32":
         raise SystemExit("This builds a Windows bundle.")
@@ -178,6 +226,7 @@ def main() -> None:
     build_app(stage)
     (stage / "smDA-HMM.bat").write_text(LAUNCHER, encoding="utf-8")
     make_zip(stage, OUT / "dist")
+    make_installer(stage, OUT / "dist", version())
 
 
 if __name__ == "__main__":

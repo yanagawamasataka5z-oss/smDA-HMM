@@ -1,0 +1,78 @@
+; Inno Setup script for smDA-HMM.  Generated values are substituted by
+; build/make_bundle.py; do not compile this file directly.
+;
+; The installer wraps the same tree as the portable zip.  Nothing is
+; registered, no services, no PATH changes: it copies the folder, makes
+; shortcuts, and removes both on uninstall.  A per-user install by default, so
+; no administrator prompt.
+
+#define AppName        "@APP_NAME@"
+#define AppVersion     "@APP_VERSION@"
+#define AppPublisher   "@APP_PUBLISHER@"
+#define AppURL         "@APP_URL@"
+#define SourceDir      "@SOURCE_DIR@"
+#define OutputDir      "@OUTPUT_DIR@"
+#define OutputBase     "@OUTPUT_BASE@"
+
+[Setup]
+AppId={{8F3C2A61-4D7E-4B25-9E14-5C6A2B90D7F1}
+AppName={#AppName}
+AppVersion={#AppVersion}
+AppVerName={#AppName} {#AppVersion}
+AppPublisher={#AppPublisher}
+AppPublisherURL={#AppURL}
+AppSupportURL={#AppURL}
+VersionInfoVersion=@APP_VERSION_INFO@
+
+; Per-user by default: no administrator prompt, and nothing outside the
+; user's profile is touched.
+PrivilegesRequiredOverridesAllowed=dialog
+PrivilegesRequired=lowest
+DefaultDirName={autopf}\{#AppName}
+DefaultGroupName={#AppName}
+DisableProgramGroupPage=yes
+LicenseFile={#SourceDir}\app\LICENSE
+
+OutputDir={#OutputDir}
+OutputBaseFilename={#OutputBase}
+Compression=lzma2/max
+SolidCompression=yes
+ArchitecturesAllowed=x64compatible
+ArchitecturesInstallIn64BitMode=x64compatible
+WizardStyle=modern
+UninstallDisplayName={#AppName} {#AppVersion}
+
+[Languages]
+Name: "english"; MessagesFile: "compiler:Default.isl"
+
+[Tasks]
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; \
+    GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+
+[Files]
+Source: "{#SourceDir}\*"; DestDir: "{app}"; \
+    Flags: ignoreversion recursesubdirs createallsubdirs
+
+[Icons]
+Name: "{group}\{#AppName}"; Filename: "{app}\smDA-HMM.bat"; \
+    WorkingDir: "{app}"; Comment: "Open smDA-HMM in your browser"
+Name: "{group}\Sample data"; Filename: "{app}\app\data"
+Name: "{group}\{cm:UninstallProgram,{#AppName}}"; Filename: "{uninstallexe}"
+Name: "{autodesktop}\{#AppName}"; Filename: "{app}\smDA-HMM.bat"; \
+    WorkingDir: "{app}"; Tasks: desktopicon
+
+[Run]
+Filename: "{app}\smDA-HMM.bat"; Description: "Start {#AppName}"; \
+    Flags: nowait postinstall skipifsilent shellexec
+
+[UninstallDelete]
+; Python writes bytecode next to the sources as it runs, into a __pycache__ in
+; every package directory.  Those files are not in the install manifest, so
+; without this the uninstaller leaves them -- measured: nine files across five
+; directories.  Naming the two top-level directories covers any package added
+; later, which listing each __pycache__ individually would not.
+;
+; Both directories are created wholly by this installer; nothing else is kept
+; in them, and results are written wherever the user chose, not here.
+Type: filesandordirs; Name: "{app}\app"
+Type: filesandordirs; Name: "{app}\python"
