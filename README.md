@@ -114,11 +114,32 @@ copied through untouched.
 ### Checking a result
 
 `data/sample/` holds eight trajectory tables together with the `hmm.csv` that
-AAS produced for each. Running the bundled data through smDA-HMM with the
-values already filled in reproduces AAS's result; `data/README.md` describes
-the files and lists the settings. **What the recordings are — the receptor, the
-stimulus, what the time points correspond to — is described in the response
-letter accompanying the manuscript.**
+AAS produced for each. Running them through smDA-HMM with the values already
+filled in reproduces AAS's result, and `data/README.md` describes the files and
+lists the settings. **What the recordings are — the receptor, the stimulus,
+what the time points correspond to — is described in the response letter
+accompanying the manuscript.**
+
+What "reproduces" means here, measured on those eight:
+
+- the selected number of states matches AAS on all eight;
+- across the 24 resulting states, the difference in *D* has a median of
+  **0.0043** and a maximum of **0.42** standard deviations of *D* itself, and
+  no state differs by as much as one standard deviation.
+
+The comparison is against the width of *D*'s own posterior, rather than as a
+percentage, because a fast state and a slow state are measured to very
+different absolute precision. For a gamma posterior with shape *a*, the
+standard deviation is `D / sqrt(a - 2)`; AAS reports it in its own `hmm.csv`,
+and the two agree to a median of 0.004 %.
+
+One cell, `RTK_B3_n0009_t0001`, differs more than the rest — about 0.4
+standard deviations, against under 0.03 for the others. This is not a
+disagreement about the answer: AAS stopped iterating slightly before the fixed
+point on that cell. Restarting the iteration from the parameters in AAS's own
+`hmm.csv` moves towards the same fixed point smDA-HMM reaches, which was
+checked directly. The remaining difference is how far short of it AAS stopped,
+and it is still well inside the measurement uncertainty.
 
 ## Repository layout
 
