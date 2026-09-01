@@ -6,10 +6,13 @@ Give it an AAS `data.csv` and the conditions the recording was made under; it
 writes an `hmm.csv` and a copy of the `data.csv` with the state columns filled
 in, to a folder you choose. **It never writes to the input.**
 
-> This README is a stub. The full text — the agreement with AAS expressed
-> against the posterior uncertainty of D, the parameter sensitivity table, the
-> known unexplained differences, and the bundled-data description — is being
-> written.
+**What the bundled recordings are** — the receptor, the stimulus, what the
+time points correspond to — **is described in the response letter accompanying
+the manuscript.** `data/README.md` covers only what the files themselves
+contain. See it also for the AAS settings these data were analysed with.
+
+> This README is a stub; the usage sections are being completed alongside the
+> packaged build.
 
 ## Running from source
 
