@@ -169,9 +169,14 @@ results were verified against.
 
 ## Method
 
-The inference follows Persson et al. (2013) as implemented in AAS, and the
-diffusion-state formulation of Hiroshima et al. (2018). Trajectories are
-reduced to squared displacements; the model has a Dirichlet prior on the
+The inference follows Persson et al. (2013) as implemented in AAS, applied to
+diffusion states as in Yanagawa et al., *Science Signaling* (2018).
+Hiroshima et al. (2018) use the same variational scheme with a different
+emission model, for fitting intensities rather than displacements; that
+analysis is not part of this package.
+
+Trajectories are reduced to squared displacements; the model has a Dirichlet
+prior on the
 initial-state and transition distributions and a gamma prior on the diffusion
 rate; states are assigned by the per-frame maximum of the posterior. The
 diffusion coefficient of state *i* is reported as its posterior expectation,
@@ -195,5 +200,5 @@ incompatible with GPL-2.0-only, and the packaged build distributes them.
 
 ## Citing
 
-Please cite the accompanying manuscript, and Hiroshima et al. (2018) for the
-method.
+Please cite the accompanying manuscript, and Yanagawa et al., *Science
+Signaling* (2018) for the method.
