@@ -42,28 +42,6 @@ PRESET = {
     "add_per_traj": True, "calc_kl_each": True,
 }
 
-# How each parameter behaves when it is wrong, measured by perturbing one at a
-# time on three of the bundled cells (scripts/param_sensitivity.py upstream).
-#
-# The distinction that matters is not the size of the error but whether it
-# announces itself.  Getting wB_tilde, mag or Calc KL wrong changes the number
-# of states, which is visible in the result.  The four marked SILENT leave the
-# state count alone and move D by 2 to 200 per cent: a reviewer who checks
-# that BestN matches and stops there would be misled.
-SILENT = "D moves without BestN changing"
-VISIBLE = "changes the number of states"
-SENSITIVITY = {
-    "n_tilde": (SILENT, "39% at 2.0"),
-    "c_tilde": (SILENT, "200% at 0.01"),
-    "wpi_tilde": (SILENT, "2% at 0.1"),
-    "add_per_traj": (SILENT, "49% if off"),
-    "wb_tilde": (VISIBLE, "state count differs at 0.01"),
-    "mag": (VISIBLE, "state count differs at 30"),
-    "calc_kl_each": (VISIBLE, "state count differs if off"),
-    "min_states": ("no effect measured", "0.000% at 2"),
-    "max_states": ("no effect measured", "0.000% at 3"),
-    "max_iter": ("no effect measured", "0.014% at 50"),
-}
 
 LABELS = {
     "min_states": "Min States", "max_states": "Max States",
@@ -254,38 +232,28 @@ def _parameters() -> tuple[float | None, float | None, dict]:
 def _summary(found, out, dt, um, p) -> None:
     """Everything the run will use, before it runs.
 
-    Worth showing even with a preset: four of these change D substantially
-    while leaving the selected number of states alone, so a result that
-    matches on BestN is not evidence the parameters were right.
+    Values and their provenance, and nothing else.  The point of this screen is
+    to let someone see what is about to run; what each parameter would do if it
+    were wrong is not something a reader can act on here, so it is not shown.
     """
     st.subheader("5. Check before running")
     rows = [
-        {"Parameter": "Input", "Value": f"{len(found)} file(s)",
-         "If wrong": "", "Measured": ""},
+        {"Parameter": "Input", "Value": f"{len(found)} file(s)", "Source": ""},
         {"Parameter": "Output folder", "Value": out or "(not set)",
-         "If wrong": "", "Measured": ""},
+         "Source": ""},
         {"Parameter": "dt [s]",
          "Value": "(cleared)" if dt is None else f"{dt:g}",
-         "If wrong": "every D scales with it",
-         "Measured": "linear in dt"
-                     + ("  [preset]" if dt == PRESET_DT else "")},
+         "Source": "preset" if dt == PRESET_DT else "entered"},
         {"Parameter": "um/px",
          "Value": "(cleared)" if um is None else f"{um:g}",
-         "If wrong": "every D scales with it",
-         "Measured": "quadratic"
-                     + ("  [preset]" if um == PRESET_UM_PX else "")},
+         "Source": "preset" if um == PRESET_UM_PX else "entered"},
     ]
     for key, value in p.items():
-        effect, measured = SENSITIVITY[key]
-        rows.append({"Parameter": LABELS[key], "Value": str(value),
-                     "If wrong": effect, "Measured": measured})
+        rows.append({
+            "Parameter": LABELS[key], "Value": str(value),
+            "Source": "preset" if value == PRESET[key] else "entered"})
     st.dataframe(pd.DataFrame(rows), hide_index=True, width="content")
-    st.caption(
-        "**Agreeing on the number of states does not show the parameters were "
-        "right.** The four marked *D moves without BestN changing* shift the "
-        "diffusion coefficients by 2 to 200 per cent while the state count "
-        f"stays put. Rows marked *[preset]* still hold the {PRESET_SOURCE} "
-        "values; dt and um/px in particular belong to that recording.")
+    st.caption(f"Rows marked *preset* hold the {PRESET_SOURCE} values.")
 
 
 def _run(found, out, dt, um, p) -> None:
