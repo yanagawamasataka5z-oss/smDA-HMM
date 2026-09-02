@@ -11,10 +11,13 @@ for bioimaging data.
 
 ## What is here
 
-`Abe_minimal_metadata_template_ja_MY.xlsx` — the metadata workbook submitted
-with the deposit. `Abe_minimal_metadata_template_ja_MY.md` is the same content
-rendered as Markdown so it can be read on GitHub without downloading anything;
-regenerate it with `scripts/ssbd_xlsx_to_md.py` if the workbook changes.
+`Abe_minimal_metadata.xlsx` — the metadata submitted with the deposit.
+`Abe_minimal_metadata.md` is the same content rendered as Markdown so it can
+be read on GitHub without downloading anything; regenerate it with
+`scripts/ssbd_xlsx_to_md.py` if the workbook changes.
+
+The column of Japanese filling-in instructions that came with SSBD's template
+has been removed; the entries themselves are unchanged.
 
 **This is a snapshot, taken 2026-09-02.** SSBD holds the authoritative record
 and may be revised after this copy was made, so where the two differ, the
