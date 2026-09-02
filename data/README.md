@@ -28,10 +28,7 @@ Named as they are in SSBD. Two cells, four time points each.
 The three files of a cell share its name, so the table, the result and the
 images are matched by name alone.
 
-Recorded 2022-11-02 between 18:41 and 19:15. The frame files inside each
-sequence keep the names the acquisition software gave them, which is why they
-do not match the cell name: those record which microscope run each frame came
-from.
+Recorded 2022-11-02 between 18:41 and 19:15.
 
 ## File formats
 
@@ -44,10 +41,11 @@ from.
 
 ## Image sequences
 
-816 files, 416 MB, 102 frames per recording with no missing frames. Two
-numbering conventions appear, inherited from the acquisition software: one
-recording numbers its frames `-10000` to `-10101`, the other seven `0000` to
-`0101`. Nothing here depends on which is used.
+816 files, 416 MB, 102 frames per recording with no missing frames. Frames
+are named `<cell>-<number>.tif`. The numbers are the acquisition software's
+own and are carried over unchanged, which is why they start at 10000 rather
+than at 0 or 1; they run to 10101 in every recording. Only their order
+matters.
 
 **smDA-HMM does not read images.** It works from the trajectory tables only.
 The sequences are included so the origin of those tables can be inspected;
