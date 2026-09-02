@@ -196,6 +196,14 @@ followed by farthest-point selection — matching what AAS does, so a given inpu
 and parameter set always give the same answer. Nothing in the analysis draws on
 a random number generator.
 
+## Related deposits
+
+| Where | What |
+|---|---|
+| [SSBD `ssbd-repos-000536`](https://doi.org/10.24631/ssbd.repos.2026.08.536) | The imaging data: raw movies and the trajectory tables for every recording, 995 GB. `docs/ssbd/` holds the submitted metadata. |
+| This repository | The VB-HMM implementation, and eight cells of that dataset to run it on. |
+| [smDA-Igor](https://github.com/yanagawamasataka5z-oss/smDA-Igor) | The Igor implementation. |
+
 ## Licence
 
 GPL-3.0-or-later. See `LICENSE`.

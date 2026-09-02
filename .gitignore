@@ -40,3 +40,6 @@ smt_setting.csv
 
 # Packaged build (embeddable Python + dependencies, ~400 MB)
 build_output/
+
+# Excel lock files
+~$*
