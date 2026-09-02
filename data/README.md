@@ -10,39 +10,39 @@ own result without obtaining anything else.
 points correspond to — see the response letter accompanying the manuscript.**
 This file describes only what the files themselves contain.
 
-## Files
+## The eight cells
 
-| Kind | Count | Description |
-|---|---|---|
-| `*_33fps.csv` | 8 | Trajectory tables. AAS v2 format: 18 columns, states named `Model 1`..`Model 5`, trajectory ends marked by an empty cell. |
-| `*_33fps_hmm.csv` | 8 | The VB-HMM result AAS produced for the table beside it. The comparison target. |
-| folders | 8 | Raw image sequences, 102 frames each. See below. |
-| `settings.csv` | 1 | The AAS settings file for this session. See below. |
+Named as they are in SSBD. Two cells, four time points each.
 
-The eight are two series of four, distinguished in the file names:
+| Cell | Time point | Trajectory table | AAS result | Image sequence |
+|---|---|---|---|---|
+| `egfr-EGF_t00002` | before stimulation | `egfr-EGF_t00002.csv` | `egfr-EGF_t00002_hmm.csv` | `egfr-EGF_t00002/` |
+| `egfr-EGF_t00012` | 2 min | `egfr-EGF_t00012.csv` | `egfr-EGF_t00012_hmm.csv` | `egfr-EGF_t00012/` |
+| `egfr-EGF_t00022` | 12 min | `egfr-EGF_t00022.csv` | `egfr-EGF_t00022_hmm.csv` | `egfr-EGF_t00022/` |
+| `egfr-EGF_t00032` | 22 min | `egfr-EGF_t00032.csv` | `egfr-EGF_t00032_hmm.csv` | `egfr-EGF_t00032/` |
+| `egfr-EGF_t000028` | before stimulation | `egfr-EGF_t000028.csv` | `egfr-EGF_t000028_hmm.csv` | `egfr-EGF_t000028/` |
+| `egfr-EGF_t000128` | 2 min | `egfr-EGF_t000128.csv` | `egfr-EGF_t000128_hmm.csv` | `egfr-EGF_t000128/` |
+| `egfr-EGF_t000228` | 12 min | `egfr-EGF_t000228.csv` | `egfr-EGF_t000228_hmm.csv` | `egfr-EGF_t000228/` |
+| `egfr-EGF_t000328` | 22 min | `egfr-EGF_t000328.csv` | `egfr-EGF_t000328_hmm.csv` | `egfr-EGF_t000328/` |
 
-```
-RTK_B3_n0000_t0000_m00000_20221102_184109_L637-TIR-search_c1_v1.tif_SB25_BC0-1200_33fps.csv
-        |    |     |      |
-        |    |     |      +-- acquisition timestamp, 2022-11-02
-        |    |     +--------- m00000 / p00004 / p00707 / p01315
-        |    +--------------- t0000 .. t0003
-        +-------------------- n0000 and n0009
-```
+The three files of a cell share its name, so the table, the result and the
+images are matched by name alone.
 
-Recorded 2022-11-02 between 18:41 and 19:15.
+Recorded 2022-11-02 between 18:41 and 19:15. The frame files inside each
+sequence keep the names the acquisition software gave them, which is why they
+do not match the cell name: those record which microscope run each frame came
+from.
+
+## File formats
+
+| Kind | Description |
+|---|---|
+| `<cell>.csv` | Trajectory table. AAS v2 format: 18 columns, states named `Model 1`..`Model 5`, trajectory ends marked by an empty cell. |
+| `<cell>_hmm.csv` | The VB-HMM result AAS produced for that table. The comparison target. |
+| `<cell>/` | The recording, one TIFF per frame, 102 frames. |
+| `settings.csv` | The AAS settings file for this session. See below. |
 
 ## Image sequences
-
-Each trajectory table has a folder beside it holding the recording it came
-from, as one TIFF per frame. The folder name is the part of the table's file
-name before `.tif_`, so the pairing is visible at a glance:
-
-```
-RTK_B3_n0000_t0000_..._c1_v1/                        <- folder, 102 frames
-RTK_B3_n0000_t0000_..._c1_v1.tif_SB25_..._33fps.csv  <- its trajectory table
-RTK_B3_n0000_t0000_..._c1_v1.tif_SB25_..._hmm.csv    <- AAS's result
-```
 
 816 files, 416 MB, 102 frames per recording with no missing frames. Two
 numbering conventions appear, inherited from the acquisition software: one
@@ -89,5 +89,7 @@ already filled in. They agree exactly:
 | dt [s] | 0.040 | `Time per frame[ms]` 40 |
 | um/px | 0.067 | `Distance per pixel[um]` 0.067 |
 
-The remaining entries in `settings.csv` configure AAS's spot detection and
-tracking, which produced these tables and is not part of this package.
+The remaining entries configure AAS's spot detection and tracking, which
+produced these tables and is not part of this package. Among them are the
+detection and linking settings: `Intensity Threshold`, `Connect distance`,
+`Connect Frame`, `Minimum trajectory length`, `ROI` and `Scan Length`.

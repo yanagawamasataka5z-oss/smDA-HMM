@@ -133,7 +133,7 @@ different absolute precision. For a gamma posterior with shape *a*, the
 standard deviation is `D / sqrt(a - 2)`; AAS reports it in its own `hmm.csv`,
 and the two agree to a median of 0.004 %.
 
-One cell, `RTK_B3_n0009_t0001`, differs more than the rest — about 0.4
+One cell, `egfr-EGF_t000128`, differs more than the rest — about 0.4
 standard deviations, against under 0.03 for the others. This is not a
 disagreement about the answer: AAS stopped iterating slightly before the fixed
 point on that cell. Restarting the iteration from the parameters in AAS's own

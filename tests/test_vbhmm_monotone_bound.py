@@ -34,6 +34,7 @@ from smda_hmm.vbhmm.model import (SPATIAL_DIM, VBEM_CONV_TOL, VBHMMParams,
                              _build_priors, _compute_lower_bound, _e_step,
                              _m_step, kmeans_init, preprocess_trajectories,
                              run_vbhmm)
+from smda_hmm.io import aas_format
 from smda_hmm.io.aas_reader import load_aas_settings_csv
 
 REPO = Path(__file__).resolve().parents[1]
@@ -59,25 +60,17 @@ def _params() -> VBHMMParams:
 
 
 def _cells() -> list[tuple[str, Path]]:
-    """Every cell with real data, both validation sets."""
-    out = []
+    """Every bundled cell, labelled by its file stem.
+
+    The label used to be assembled from fixed positions in the acquisition
+    file name.  The bundled tables are now named after their SSBD cell, which
+    has fewer parts, so the stem is used directly -- it is already the
+    identifier, and nothing here needs to parse it.
+    """
     root = REPO / "data" / "sample"
-    if root.is_dir():
-        for c in sorted(root.glob("*/*33fps.csv")):
-            if not c.name.endswith("_hmm.csv"):
-                out.append((c.parent.name.replace("egfr-EGF_", "") + "/"
-                            + c.name.split("_")[3], c))
-    for sub in ("EGFR", "ERBB3", "ERBB4"):
-        d = REPO / "data" / "RTK" / sub
-        if not d.is_dir():
-            continue
-        for c in sorted(d.glob("*33fps.csv")):
-            if c.name.endswith("_hmm.csv") or "trackmate" in c.name:
-                continue
-            if Path(str(c).replace(".csv", "_hmm.csv")).exists():
-                p = c.name.split("_")
-                out.append((f"{sub}/{p[1]}_{p[2]}", c))
-    return out
+    if not root.is_dir():
+        return []
+    return [(c.stem, c) for c in aas_format.list_data_csvs(root)]
 
 
 CELLS = _cells()

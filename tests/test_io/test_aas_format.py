@@ -35,8 +35,7 @@ IGOR_V2 = Path(os.environ.get("SMDA_IGOR_SAMPLEDATA", ""))
 
 
 def _v2_files() -> list[Path]:
-    out = sorted((REPO / "data" / "sample").glob("*33fps.csv"))
-    out = [p for p in out if not p.name.endswith("_hmm.csv")]
+    out = list(aas_format.list_data_csvs(REPO / "data" / "sample"))
     if IGOR_V2.is_dir():
         out += sorted(IGOR_V2.glob("*_AAS/*_AAS2.csv"))
     return out

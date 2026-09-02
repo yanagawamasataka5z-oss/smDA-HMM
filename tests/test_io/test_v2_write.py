@@ -110,8 +110,7 @@ class TestHmmCsvFormat:
         from smda_hmm.vbhmm.model import VBHMMParams, run_vbhmm_analysis
         from smda_hmm.io.aas_reader import load_aas_settings_csv
         st = REPO / "data" / "sample" / "settings.csv"
-        csvs = sorted((REPO / "data" / "sample").glob("*33fps.csv"))
-        csvs = [c for c in csvs if not c.name.endswith("_hmm.csv")]
+        csvs = list(aas_format.list_data_csvs(REPO / "data" / "sample"))
         if not st.exists() or not csvs:
             pytest.skip("validation data not present")
         s = load_aas_settings_csv(st)
@@ -223,8 +222,7 @@ class TestOutputPairVersionMatchesInput:
     @pytest.mark.skipif(
         not (REPO / "data" / "sample").is_dir(), reason="no v2 data")
     def test_v2_input_gives_a_v2_pair(self, tmp_path):
-        src = sorted((REPO / "data" / "sample")
-                     .glob("*33fps.csv"))[-1]
+        src = aas_format.list_data_csvs(REPO / "data" / "sample")[-1]
         d, h, version = self._run(src, tmp_path)
         assert version == AAS2
         assert aas_format.detect_version(d) == AAS2, "data.csv version changed"
@@ -264,8 +262,7 @@ class TestOutputPairVersionMatchesInput:
         not (REPO / "data" / "sample").is_dir(), reason="no v2 data")
     def test_writing_elsewhere_leaves_the_input_untouched(self, tmp_path):
         """The source is read, never written, when data_out is given."""
-        src = sorted((REPO / "data" / "sample")
-                     .glob("*33fps.csv"))[-1]
+        src = aas_format.list_data_csvs(REPO / "data" / "sample")[-1]
         before = src.read_bytes()
         self._run(src, tmp_path)
         assert src.read_bytes() == before, "the input data.csv was modified"
@@ -273,8 +270,7 @@ class TestOutputPairVersionMatchesInput:
     @pytest.mark.skipif(
         not (REPO / "data" / "sample").is_dir(), reason="no v2 data")
     def test_hmm_path_defaults_beside_the_data_output(self, tmp_path):
-        src = sorted((REPO / "data" / "sample")
-                     .glob("*33fps.csv"))[-1]
+        src = aas_format.list_data_csvs(REPO / "data" / "sample")[-1]
         d, h, _ = self._run(src, tmp_path)
         assert h.parent == tmp_path, (
             "the hmm.csv must land beside the data.csv it belongs to, not "
