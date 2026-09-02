@@ -29,6 +29,7 @@ import pytest
 
 from smda_hmm.io import aas_format
 from smda_hmm.io.aas_format import AAS2, AAS4
+from tests.helpers import v4_sample_dir
 
 REPO = Path(__file__).resolve().parents[2]
 IGOR_V2 = Path(os.environ.get("SMDA_IGOR_SAMPLEDATA", ""))
@@ -42,16 +43,20 @@ def _v2_files() -> list[Path]:
 
 
 def _v4_files() -> list[Path]:
-    out = []
-    s = REPO / "data" / "_absent_v4" / "Sample_data.csv"
-    if s.is_file():
-        out.append(s)
-    out += sorted((REPO / "data" / "_absent_v4").glob("*/*_data.csv"))
-    return out
+    """v4 pairs to check, from SMDA_V4_SAMPLE; see tests.helpers.v4_sample_dir.
+
+    This looked in ``data/_absent_v4``, a directory that cannot exist, so the
+    v4 half of the format handling was never exercised in this repository and
+    the suite reported a clean run regardless.
+    """
+    d = v4_sample_dir()
+    return [d / "Sample_data.csv"] if d else []
 
 
 V2 = _v2_files()
 V4 = _v4_files()
+
+V4_REASON = "set SMDA_V4_SAMPLE to a directory holding an AAS v4 Sample pair"
 
 
 # ---------------------------------------------------------------------------
@@ -64,7 +69,7 @@ def test_v2_detected(path):
     assert aas_format.detect_version(path) == AAS2
 
 
-@pytest.mark.skipif(not V4, reason="no v4 data in this checkout")
+@pytest.mark.skipif(not V4, reason=V4_REASON)
 @pytest.mark.parametrize("path", V4, ids=lambda p: p.name[:40])
 def test_v4_detected(path):
     assert aas_format.detect_version(path) == AAS4
@@ -151,7 +156,7 @@ def test_v2_pairs_resolve_without_the_data_suffix():
         assert data == p and hmm2 == hmm and version == AAS2
 
 
-@pytest.mark.skipif(not V4, reason="no v4 data")
+@pytest.mark.skipif(not V4, reason=V4_REASON)
 def test_v4_pairs_resolve():
     for p in V4:
         hmm = aas_format.hmm_path_for(p)
@@ -241,7 +246,7 @@ class TestStateColumnNames:
         assert aas_format.available_state_counts(cols) == [1, 2, 3, 4, 5]
         assert aas_format.find_state_column(cols, 3) == "Model 3"
 
-    @pytest.mark.skipif(not V4, reason="no v4 data")
+    @pytest.mark.skipif(not V4, reason=V4_REASON)
     def test_v4_columns_resolve(self):
         import pandas as pd
         cols = pd.read_csv(V4[0], nrows=0).columns

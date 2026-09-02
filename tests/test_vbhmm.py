@@ -52,7 +52,7 @@ from smda_hmm.vbhmm.model import (
     forward_backward,
     SPATIAL_DIM,
 )
-from tests.helpers import make_test_vbhmm_params
+from tests.helpers import make_test_vbhmm_params, v4_sample_dir
 
 # --- AAS Model 4 reference values (from Sample_hmm.csv) ---
 AAS_MODEL4 = {
@@ -82,11 +82,20 @@ AAS_MODEL4 = {
 
 AAS_LB_ALL = {1: 148280.06, 2: 182651.27, 3: 188421.95, 4: 189169.10, 5: 189087.52}
 
-SAMPLE_DATA = Path(__file__).parent.parent / "data" / "Sample" / "Sample_data.csv"
-SAMPLE_HMM = Path(__file__).parent.parent / "data" / "Sample" / "Sample_hmm.csv"
+# The reference numbers above were measured by AAS on smDA-Python's Sample,
+# which is v4 and is not part of this deposit.  Re-anchoring them to a bundled
+# cell would mean replacing every expected value with one this implementation
+# produced, which tests nothing.  So the data is pointed at instead; see
+# tests.helpers.v4_sample_dir.  The path used to be a fixed data/Sample, which
+# does not exist here, and these 29 tests skipped silently from the port until
+# 2026-09-02.
+_V4_DIR = v4_sample_dir()
+SAMPLE_DATA = _V4_DIR / "Sample_data.csv" if _V4_DIR else None
+SAMPLE_HMM = _V4_DIR / "Sample_hmm.csv" if _V4_DIR else None
 
 SKIP_NO_SAMPLE = pytest.mark.skipif(
-    not SAMPLE_DATA.exists(), reason="Sample data not available"
+    _V4_DIR is None,
+    reason="set SMDA_V4_SAMPLE to a directory holding an AAS v4 Sample pair"
 )
 
 

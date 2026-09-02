@@ -161,9 +161,12 @@ def test_reported_bound_is_not_the_convergence_bound():
 def test_rust_and_python_tolerances_agree():
     """The two engines must stop at the same iteration; a drifted constant
     would show up as a small, hard-to-attribute D difference."""
-    rs = REPO / "smda-scan" / "smda-scan" / "src" / "vbhmm.rs"
-    if not rs.exists():
-        pytest.skip("Rust source not present")
+    # The crate sits at smda_scan/ here; smDA-Python nests it one deeper as
+    # smda-scan/smda-scan/.  The ported path pointed at the latter and so this
+    # test skipped silently from the port until 2026-09-02.  It must not skip:
+    # the file is committed to this repository, so its absence is a fault.
+    rs = REPO / "smda_scan" / "src" / "vbhmm.rs"
+    assert rs.is_file(), f"Rust source missing: {rs}"
     m = re.search(r"const VBEM_CONV_TOL:\s*f64\s*=\s*([0-9eE.+-]+)\s*;",
                   rs.read_text(encoding="utf-8"))
     assert m, "VBEM_CONV_TOL not found in vbhmm.rs"

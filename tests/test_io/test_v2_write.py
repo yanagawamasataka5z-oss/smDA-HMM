@@ -21,6 +21,7 @@ import pytest
 from smda_hmm.vbhmm.model import apply_state_columns, build_hmm_csv_text
 from smda_hmm.io import aas_format
 from smda_hmm.io.aas_format import AAS2, AAS4
+from tests.helpers import v4_sample_dir
 
 REPO = Path(__file__).resolve().parents[2]
 
@@ -229,15 +230,18 @@ class TestOutputPairVersionMatchesInput:
         assert self._hmm_version(h.read_text(encoding="utf-8")) == AAS2, (
             "hmm.csv was written in a different version than its data.csv")
 
+    # Gated on data/_absent_v4, which cannot exist: the one test that a v4
+    # input yields a v4 pair never ran here.  See tests.helpers.v4_sample_dir.
     @pytest.mark.skipif(
-        not (REPO / "data" / "_absent_v4" / "Sample_data.csv").is_file(),
-        reason="no v4 data")
+        v4_sample_dir() is None,
+        reason="set SMDA_V4_SAMPLE to a directory holding an AAS v4 Sample pair")
     def test_v4_input_gives_a_v4_pair(self, tmp_path):
         from smda_hmm.vbhmm.model import VBHMMParams, run_vbhmm_analysis
         import json
         import warnings
-        src = REPO / "data" / "_absent_v4" / "Sample_data.csv"
-        m = json.loads(open(REPO / "data" / "_absent_v4" / "Sample_hmm.csv",
+        v4 = v4_sample_dir()
+        src = v4 / "Sample_data.csv"
+        m = json.loads(open(v4 / "Sample_hmm.csv",
                             encoding="utf-8").readline()
                        .strip().strip('"').replace('""', '"'))
         p = VBHMMParams(

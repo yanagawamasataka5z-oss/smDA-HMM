@@ -72,6 +72,11 @@ Python is on `PATH`.
 
 To run the tests: `.venv\Scripts\python -m pytest`.
 
+Four of them check the v4 half of the reader and writer, and the deposited
+data is v2 throughout. Rather than fabricate a v4 file they read a real one,
+named by `SMDA_V4_SAMPLE` — smDA-Python's `data/Sample` is such a pair.
+Unset, those four skip and say so.
+
 ## Using it
 
 The interface is one screen, top to bottom.
