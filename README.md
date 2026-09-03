@@ -33,9 +33,11 @@ tracking* additionally requires AAS, which is not distributable here.
 
 1. Download `smDA-HMM-<version>-win64.zip` from the
    [Releases](https://github.com/yanagawamasataka5z-oss/smDA-HMM/releases) page.
-2. Extract it anywhere — a USB stick is fine. Nothing is installed, no
-   administrator rights are needed, and nothing outside the extracted folder is
-   written to.
+2. Extract it into a short path — `C:\smDA-HMM\` is a good choice, and a USB
+   stick is fine. The bundle nests deeply, so a destination longer than about
+   90 characters runs into the Windows 260-character path limit and the
+   extraction stops partway through. Nothing is installed, no administrator
+   rights are needed, and nothing outside the extracted folder is written to.
 3. Double-click **`smDA-HMM.bat`**.
 4. A browser tab opens at <http://localhost:8502>. Closing the console window
    stops the program.
