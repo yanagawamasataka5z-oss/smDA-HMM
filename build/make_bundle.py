@@ -41,15 +41,63 @@ PYD = "smda_scan.cp311-win_amd64.pyd"
 PRUNE_DIRS = {"__pycache__", "tests", "test"}
 PRUNE_PACKAGES = ("pip", "setuptools", "pkg_resources")
 
+# Kept to plain ASCII: the console runs on the OEM code page, and anything
+# outside it would arrive as mojibake in exactly the situation where the text
+# has to be readable.
+#
+# The two checks exist because both failures used to end the same way -- the
+# window appearing and vanishing before anything could be read. The first is
+# the one seen in practice: security software removes the bundled interpreter
+# during extraction, since an unknown python.exe inside a downloaded zip is
+# what it is built to be suspicious of. The folder still looks extracted.
 LAUNCHER = """@echo off
 rem Start smDA-HMM.  Everything needed is inside this folder; nothing is
 rem installed and nothing outside it is touched.
 setlocal
 cd /d "%~dp0"
+
+if not exist "%~dp0python\\python.exe" (
+    echo.
+    echo   smDA-HMM cannot start: the bundled Python is missing.
+    echo.
+    echo   Expected to find:
+    echo     %~dp0python\\python.exe
+    echo.
+    echo   This folder should hold two folders, app and python.  If python is
+    echo   missing or short of files, it was most likely removed by security
+    echo   software while the zip was being extracted.
+    echo.
+    echo   Download the zip again and extract it to a short path such as
+    echo   C:\\smDA-HMM\\ .  If python disappears again, allow that folder in
+    echo   your security software before extracting.
+    echo.
+    pause
+    exit /b 1
+)
+
+if not exist "%~dp0app\\app.py" (
+    echo.
+    echo   smDA-HMM cannot start: the application files are missing.
+    echo.
+    echo   Expected to find:
+    echo     %~dp0app\\app.py
+    echo.
+    echo   Download the zip again and extract all of it.
+    echo.
+    pause
+    exit /b 1
+)
+
 echo Starting smDA-HMM.  A browser tab will open at http://localhost:8502
 echo Close this window to stop it.
 echo.
 "%~dp0python\\python.exe" -m streamlit run "%~dp0app\\app.py" --server.port 8502
+if errorlevel 1 (
+    echo.
+    echo   smDA-HMM stopped with an error.  The reason is above this line.
+    echo.
+    pause
+)
 endlocal
 """
 

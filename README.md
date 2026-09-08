@@ -38,8 +38,12 @@ tracking* additionally requires AAS, which is not distributable here.
    90 characters runs into the Windows 260-character path limit and the
    extraction stops partway through. Nothing is installed, no administrator
    rights are needed, and nothing outside the extracted folder is written to.
-3. Double-click **`smDA-HMM.bat`**.
-4. A browser tab opens at <http://localhost:8502>. Closing the console window
+3. Check that the extracted folder holds two folders, **`app`** and
+   **`python`**. If `python` is missing, security software removed it during
+   extraction — download the zip again and extract it, allowing the folder in
+   your security software if it happens twice.
+4. Double-click **`smDA-HMM.bat`**.
+5. A browser tab opens at <http://localhost:8502>. Closing the console window
    stops the program.
 
 The bundle carries its own Python interpreter and every dependency. It does
