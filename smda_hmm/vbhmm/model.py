@@ -163,8 +163,10 @@ class VBHMMModelResult:
     state: VBHMMState      # Final variational parameters
     priors: VBHMMPriors    # Priors used
     pst: np.ndarray        # (T, N) posterior state probabilities
-    converged: bool
-    n_iter: int
+    # Properties of the run, not of the model. None when the result came from
+    # a file rather than from a fit: no hmm.csv records them.
+    converged: bool | None
+    n_iter: int | None
     D: np.ndarray          # (N,) Diffusion coefficients [μm²/s]
 
 
@@ -1642,11 +1644,12 @@ def build_hmm_csv_text(result: VBHMMResult, version: str = "aas4") -> str:
     # Suitable model
     lines.append(f"Suitable Model,{result.best_model}")
 
-    # Convergence info (appended after Suitable Model for AAS4 compatibility)
-    for model in result.models:
-        lines.append(
-            f"Converged,{model.n_states},{model.converged},{model.n_iter}")
-
+    # Nothing follows.  Earlier versions appended one "Converged,K,flag,iters"
+    # row per model here.  AAS writes no such row, so a reader comparing the
+    # two files found five rows on one side and none on the other before
+    # reaching anything worth comparing.  Whether a model converged is a
+    # property of this run, not of the fitted model, and it is reported in the
+    # interface instead -- see smda_hmm/app/main.py.
     return "\n".join(lines) + "\n"
 
 
@@ -1706,7 +1709,6 @@ def build_failed_hmm_csv_text(
             for k in range(n):
                 parts.extend(["nan", "nan"])
             lines.append(",".join(parts))
-        lines.append(f"Converged,False,0")
         lines.append("")
 
     lines.append("Suitable Model,0")
@@ -1940,17 +1942,13 @@ def load_vbhmm_from_csv(
         for _ in range(n_states):
             i += 1
 
-        # Converged line (optional — smda-python output only, not in AAS)
-        converged = True
-        n_iter = 0
+        # No hmm.csv records whether the fit converged -- AAS never wrote it,
+        # and this package no longer does either.  None says so.  It used to
+        # read True here, which claimed convergence for every model in every
+        # file ever loaded, including AAS's, on no evidence.
+        converged = None
+        n_iter = None
         i += 1
-        if i < len(lines):
-            cline = lines[i].strip()
-            if cline.startswith("Converged"):
-                cparts = cline.split(",")
-                converged = cparts[1].strip() == "True"
-                n_iter = int(cparts[2].strip()) if len(cparts) > 2 else 0
-                i += 1  # advance past Converged line
 
         # hmm.csv stores values already D-sorted. np.argsort(D) on
         # sorted D returns identity permutation, so _render_vbhmm_results

@@ -279,3 +279,89 @@ class TestOutputPairVersionMatchesInput:
         assert h.parent == tmp_path, (
             "the hmm.csv must land beside the data.csv it belongs to, not "
             "beside the source")
+
+
+class TestHmmCsvHasNoRowsAasLacks:
+    """The two files are meant to be read side by side.
+
+    A row that only one of them carries is not a harmless extra: it shifts
+    everything below it, so a reader comparing the files has to account for it
+    before reaching any number worth comparing. Earlier versions appended five
+    ``Converged,K,flag,iterations`` rows after ``Suitable Model``, which AAS
+    does not write.
+
+    This compares the row LABELS rather than the values -- the values differ by
+    design, the shape must not.
+    """
+
+    @staticmethod
+    def _labels(text: str) -> list[str]:
+        import re
+        out = []
+        for raw in text.splitlines():
+            s = raw.strip()
+            if not s:
+                out.append("<blank>")
+                continue
+            head = s.split(",")[0].strip()
+            if head.startswith("{"):
+                head = "<json metadata>"
+            head = re.sub(r"\[\d+\]", "[i]", head)
+            if re.fullmatch(r"-?\d+(\.\d+)?", head):
+                head = "<numeric row>"
+            out.append(head)
+        return out
+
+    @pytest.mark.skipif(
+        not (REPO / "data" / "sample").is_dir(), reason="no v2 data")
+    def test_row_composition_matches_aas(self):
+        """One cell, all five state counts, against the hmm.csv AAS wrote."""
+        from smda_hmm.vbhmm.model import VBHMMParams, run_vbhmm_analysis
+        from smda_hmm.io.aas_reader import load_aas_settings_csv
+        import warnings
+
+        st = REPO / "data" / "sample" / "settings.csv"
+        csvs = aas_format.list_data_csvs(REPO / "data" / "sample")
+        if not st.exists() or not csvs:
+            pytest.skip("validation data not present")
+        src = csvs[0]
+        theirs = aas_format.hmm_path_for(src)
+        assert theirs is not None and theirs.is_file(), src
+
+        s = load_aas_settings_csv(st)
+        p = VBHMMParams(
+            n_tilde=s["n_tilde"], c_tilde=s["c_tilde"],
+            w_pi_tilde=s["w_pi_tilde"], w_b_tilde=s["w_b_tilde"], mag=s["mag"],
+            min_hidden=1, max_hidden=5, max_iter=100, num_run=1,
+            frame_minimum=s["vbhmm_min_frame"],
+            estimate_mode=s["estimate_mode"],
+            is_add_each_trajectory=s["add_per_traj"],
+            is_calc_kl_each=s["calc_kl_each"],
+            timestep=0.040, distance_per_pixel=0.067)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            result = run_vbhmm_analysis(str(src), p)
+
+        want = self._labels(theirs.read_text(encoding="utf-8"))
+        got = self._labels(build_hmm_csv_text(result, AAS2))
+
+        from collections import Counter
+        extra = Counter(got) - Counter(want)
+        missing = Counter(want) - Counter(got)
+        assert not extra, f"rows AAS does not write: {dict(extra)}"
+        assert not missing, f"rows AAS writes and this does not: {dict(missing)}"
+        assert want == got, "same rows, different order"
+
+    @pytest.mark.skipif(
+        not (REPO / "data" / "sample").is_dir(), reason="no v2 data")
+    def test_convergence_is_not_recorded_in_the_file(self):
+        """Whether a fit converged belongs to the run, not to the model.
+
+        It is reported in the interface; see smda_hmm/app/main.py. Putting it
+        back in the file would reintroduce the mismatch above.
+        """
+        from smda_hmm.vbhmm.model import build_failed_hmm_csv_text
+        from tests.helpers import make_test_vbhmm_params
+        text = build_failed_hmm_csv_text(
+            make_test_vbhmm_params(min_hidden=1, max_hidden=3), "boom")
+        assert "Converged" not in text

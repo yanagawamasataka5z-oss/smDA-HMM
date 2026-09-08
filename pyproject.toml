@@ -1,6 +1,6 @@
 [project]
 name = "smda-hmm"
-version = "0.1.0"
+version = "0.1.1"
 description = "VB-HMM diffusion-state analysis of single-molecule trajectory tables"
 readme = "README.md"
 requires-python = ">=3.11"

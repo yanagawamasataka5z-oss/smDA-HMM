@@ -309,8 +309,15 @@ def _run(found, out, dt, um, p) -> None:
             data_p, hmm_p, version = write_vbhmm_outputs(
                 src, result, overwrite=False,
                 data_out=Path(out) / name)
+            # Which models ran out of iterations instead of converging.
+            # Not written to hmm.csv -- AAS has no such field, and a row
+            # only one of the two files carries gets in the way of
+            # comparing them. It is still worth knowing, so it is here.
+            capped = [str(m.n_states) for m in result.models
+                      if m.converged is False]
             done.append({"File": name, "Format": version,
                          "Best N": result.best_model,
+                         "Hit iteration limit": ", ".join(capped) or "none",
                          "data.csv": data_p.name, "hmm.csv": hmm_p.name})
         except Exception as exc:                      # noqa: BLE001
             failed.append({"File": name, "Error": f"{type(exc).__name__}: {exc}"})
@@ -320,6 +327,16 @@ def _run(found, out, dt, um, p) -> None:
     if done:
         st.success(f"{len(done)} file(s) written to `{out}`")
         st.dataframe(pd.DataFrame(done), hide_index=True, width="content")
+        st.caption(
+            f"**Hit iteration limit** lists the state counts whose fit "
+            f"stopped at {p['max_iter']} iterations rather than meeting the "
+            f"convergence criterion. Their lower bound is a lower bound on "
+            f"what more iterations would reach, so model selection can still "
+            f"reject them — but if one is the selected **Best N**, its "
+            f"parameters are not at a fixed point. With the bundled data the "
+            f"five-state fit reaches the limit on seven of the eight cells; "
+            f"the three-state fit is selected everywhere and converges "
+            f"everywhere.")
     if failed:
         st.error(f"{len(failed)} file(s) failed")
         st.dataframe(pd.DataFrame(failed), hide_index=True, width="content")
