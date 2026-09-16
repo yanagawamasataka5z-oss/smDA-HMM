@@ -6,38 +6,46 @@ table was derived from. They are what the figures quoted for this package were
 measured on, so a reviewer can re-run the analysis and compare against AAS's
 own result without obtaining anything else.
 
-**For what these recordings are — the receptor, the stimulus, what the time
-points correspond to — see the response letter accompanying the manuscript.**
-This file describes only what the files themselves contain.
+Where each file came from and what it was used for is recorded below: the
+receptor and imaging field it was recorded in, the time point, and the figures
+and tables of Abe *et al.* it appears in.
+
+**For what the recordings mean — the stimulus, what the time points correspond
+to — see the response letter accompanying the manuscript.**
 
 ## The eight cells
 
-Named as they are in SSBD. Two cells, four time points each.
+Named as they are in SSBD. Two cells, four time points each; all eight are
+EGFR, recorded in imaging fields 2 and 28.
 
-| Cell | Time point | Trajectory table | AAS result | Image sequence |
-|---|---|---|---|---|
-| `egfr-EGF_t00002` | before stimulation | `egfr-EGF_t00002.csv` | `egfr-EGF_t00002_hmm.csv` | `egfr-EGF_t00002/` |
-| `egfr-EGF_t00012` | 2 min | `egfr-EGF_t00012.csv` | `egfr-EGF_t00012_hmm.csv` | `egfr-EGF_t00012/` |
-| `egfr-EGF_t00022` | 12 min | `egfr-EGF_t00022.csv` | `egfr-EGF_t00022_hmm.csv` | `egfr-EGF_t00022/` |
-| `egfr-EGF_t00032` | 22 min | `egfr-EGF_t00032.csv` | `egfr-EGF_t00032_hmm.csv` | `egfr-EGF_t00032/` |
-| `egfr-EGF_t000028` | before stimulation | `egfr-EGF_t000028.csv` | `egfr-EGF_t000028_hmm.csv` | `egfr-EGF_t000028/` |
-| `egfr-EGF_t000128` | 2 min | `egfr-EGF_t000128.csv` | `egfr-EGF_t000128_hmm.csv` | `egfr-EGF_t000128/` |
-| `egfr-EGF_t000228` | 12 min | `egfr-EGF_t000228.csv` | `egfr-EGF_t000228_hmm.csv` | `egfr-EGF_t000228/` |
-| `egfr-EGF_t000328` | 22 min | `egfr-EGF_t000328.csv` | `egfr-EGF_t000328_hmm.csv` | `egfr-EGF_t000328/` |
+| Cell | Receptor | Imaging field | Time point | Trajectory table | AAS result | Image sequence |
+|---|---|---|---|---|---|---|
+| `egfr-EGF_t00002` | EGFR | 2 | before stimulation | `egfr-EGF_t00002.csv` | `egfr-EGF_t00002_hmm.csv` | `egfr-EGF_t00002/` |
+| `egfr-EGF_t00012` | EGFR | 2 | 2 min | `egfr-EGF_t00012.csv` | `egfr-EGF_t00012_hmm.csv` | `egfr-EGF_t00012/` |
+| `egfr-EGF_t00022` | EGFR | 2 | 12 min | `egfr-EGF_t00022.csv` | `egfr-EGF_t00022_hmm.csv` | `egfr-EGF_t00022/` |
+| `egfr-EGF_t00032` | EGFR | 2 | 22 min | `egfr-EGF_t00032.csv` | `egfr-EGF_t00032_hmm.csv` | `egfr-EGF_t00032/` |
+| `egfr-EGF_t000028` | EGFR | 28 | before stimulation | `egfr-EGF_t000028.csv` | `egfr-EGF_t000028_hmm.csv` | `egfr-EGF_t000028/` |
+| `egfr-EGF_t000128` | EGFR | 28 | 2 min | `egfr-EGF_t000128.csv` | `egfr-EGF_t000128_hmm.csv` | `egfr-EGF_t000128/` |
+| `egfr-EGF_t000228` | EGFR | 28 | 12 min | `egfr-EGF_t000228.csv` | `egfr-EGF_t000228_hmm.csv` | `egfr-EGF_t000228/` |
+| `egfr-EGF_t000328` | EGFR | 28 | 22 min | `egfr-EGF_t000328.csv` | `egfr-EGF_t000328_hmm.csv` | `egfr-EGF_t000328/` |
 
 The three files of a cell share its name, so the table, the result and the
 images are matched by name alone.
+
+Which figures a file was used for follows from the kind of file rather than
+from which cell it is, and is listed with the three kinds under **File
+formats** below.
 
 Recorded 2022-11-02 between 18:41 and 19:15.
 
 ## File formats
 
-| Kind | Description |
-|---|---|
-| `<cell>.csv` | Trajectory table. AAS v2 format: 18 columns, states named `Model 1`..`Model 5`, trajectory ends marked by an empty cell. |
-| `<cell>_hmm.csv` | The VB-HMM result AAS produced for that table. The comparison target. |
-| `<cell>/` | The recording, one TIFF per frame, 102 frames. |
-| `settings.csv` | The AAS settings file for this session. See below. |
+| Kind | Related figures and tables in Abe *et al.* | Description |
+|---|---|---|
+| `<cell>.csv` | Fig. 2 | Trajectory table. AAS v2 format: 18 columns, states named `Model 1`..`Model 5`, trajectory ends marked by an empty cell. |
+| `<cell>_hmm.csv` | Fig. S1, Table S1 | The VB-HMM result AAS produced for that table. The comparison target. |
+| `<cell>/` | Fig. 1 | The recording, one TIFF per frame, 102 frames. |
+| `settings.csv` | — | The AAS settings file for this session. Not a measurement; see below. |
 
 ## Image sequences
 
